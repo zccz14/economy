@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+html, body, #root { height: 100%; }
+body { @apply bg-bg text-ink antialiased; font-feature-settings: "tnum" 1; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { @apply bg-line rounded-full; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@layer components {
+  .num { @apply font-mono tabular-nums; }
+  .card-surface { @apply rounded-xl border border-line bg-panel; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full border border-line bg-panel2 px-2.5 py-0.5 text-xs text-sub; }
+}
