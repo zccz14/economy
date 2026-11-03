@@ -44,7 +44,8 @@ export function CompanyPanel({
     const n = nodeMap.get(code)
     return n ? (lang === 'zh' ? n.name_zh : n.name_en) : code
   }
-  const tone = company.confidence === '高' ? 'high' : company.confidence === '中' ? 'mid' : 'low'
+  const tone = company.confidence === '高' ? 'high' : (company.confidence === '中' || company.confidence === '模板') ? 'mid' : 'low'
+  const auto = !company.biz_zh && !!company.biz_en
   const cur = company.currency
 
   return (
@@ -130,8 +131,11 @@ export function CompanyPanel({
 
         <section className="space-y-2 text-[12.5px] leading-relaxed">
           <div>
-            <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-dim">{t('co.business')}</div>
-            <p className="text-sub">{company.biz_zh || '—'}</p>
+            <div className="mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-dim">
+              <span>{company.biz_zh ? t('co.business') : t('co.businessEn')}</span>
+              {auto && <Badge tone="mid">{t('co.auto')}</Badge>}
+            </div>
+            <p className="text-sub">{company.biz_zh || company.biz_en || '—'}</p>
           </div>
           <div>
             <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-dim">{t('co.expense')}</div>

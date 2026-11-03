@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
-  createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, useReactTable,
-  type SortingState,
+  createColumnHelper, flexRender, getCoreRowModel, getPaginationRowModel, getSortedRowModel,
+  useReactTable, type SortingState,
 } from '@tanstack/react-table'
-import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsUpDown } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { useI18n } from '@/lib/i18n'
@@ -87,17 +88,22 @@ export function ComparisonTable({
       header: t('cmp.col.confidence'),
       cell: (i) => {
         const v = i.getValue()
-        const tone = v === '高' ? 'high' : v === '中' ? 'mid' : 'low'
+        const tone = v === '高' ? 'high' : (v === '中' || v === '模板') ? 'mid' : 'low'
         return <Badge tone={tone}>{v || '—'}</Badge>
       },
       enableSorting: false,
     }),
   ], [lang, nodeMap, t, onSelectNode])
 
+  const [pageSize, setPageSize] = useState(50)
   const table = useReactTable({
-    data: rows, columns, state: { sorting }, onSortingChange: setSorting,
+    data: rows, columns, state: { sorting },
+    onSortingChange: setSorting,
+    initialState: { pagination: { pageSize: 50, pageIndex: 0 } },
     getCoreRowModel: getCoreRowModel(), getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   })
+  useEffect(() => { table.setPageSize(pageSize) }, [pageSize, table])
 
   return (
     <div className="space-y-3">
@@ -160,6 +166,28 @@ export function ComparisonTable({
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-dim">
+        <div className="flex items-center gap-2">
+          <span className="num">{table.getState().pagination.pageIndex + 1} / {Math.max(1, table.getPageCount())}</span>
+          <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+            <ChevronLeft className="h-3.5 w-3.5" />
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            <ChevronRight className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+        <div className="flex items-center gap-2">
+          <span>{lang === 'zh' ? '每页' : 'per page'}</span>
+          <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+            <SelectTrigger className="h-8 w-[5.5rem]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {[25, 50, 100, 200].map((n) => <SelectItem key={n} value={String(n)}>{n}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <span className="num">{rows.length} {t('cmp.rows')}</span>
+        </div>
       </div>
     </div>
   )
