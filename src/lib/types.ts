@@ -64,6 +64,7 @@ export interface Company {
   downstream: LinkW[]
   upstream: LinkW[]
   biz_zh: string
+  biz_en?: string
   asset_note_zh: string
   expense_note_zh: string
   confidence: string

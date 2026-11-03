@@ -67,6 +67,9 @@ export const DICT: Record<string, { zh: string; en: string }> = {
   'co.downstream': { zh: '下游节点', en: 'Downstream nodes' },
   'co.valuation': { zh: '估值与相对倍数', en: 'Valuation & relative multiples' },
   'co.confidence': { zh: '映射置信度', en: 'Mapping confidence' },
+  'co.auto': { zh: '自动提取', en: 'auto-extracted' },
+  'co.businessEn': { zh: '业务简介（数据源原文）', en: 'Business summary (source)' },
+  'cmp.col.biz': { zh: '节点置信度', en: 'Mapping' },
   'co.currency': { zh: '报告币种', en: 'Reporting currency' },
   'co.fy': { zh: '财年截止', en: 'Fiscal year end' },
 
